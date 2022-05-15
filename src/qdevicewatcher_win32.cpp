@@ -198,6 +198,17 @@ LRESULT CALLBACK dw_internal_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         switch (wParam) {
         case DBT_DEVNODES_CHANGED:
             zDebug("DBT_DEVNODES_CHANGED message received, no extended info.");
+            if (1) {
+#ifdef GWLP_USERDATA
+                QDeviceWatcherPrivate *watcher = (QDeviceWatcherPrivate *) GetWindowLongPtr(hwnd, GWLP_USERDATA);
+#else
+                QDeviceWatcherPrivate *watcher = (QDeviceWatcherPrivate *) GetWindowLong(hwnd, GWL_USERDATA);
+#endif
+                QList<QDeviceChangeEvent *> events;
+                QString action_str("change");
+                QDeviceChangeEvent::Action action = QDeviceChangeEvent::Change;
+                watcher->emitDeviceAction("unknown", action_str);
+            }
             break;
         case DBT_QUERYCHANGECONFIG:
             zDebug("DBT_QUERYCHANGECONFIG message received, no extended info.");
